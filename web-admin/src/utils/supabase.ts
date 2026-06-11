@@ -4,12 +4,13 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('Supabase environment variables are not configured properly')
+  console.error('Error: Supabase environment variables are not configured properly.')
+  console.error('Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in your environment.')
 }
 
 export const supabase: SupabaseClient = createClient(
-  supabaseUrl || '',
-  supabaseAnonKey || ''
+  supabaseUrl || 'https://feufomdbxdfnwfmjisda.supabase.co',
+  supabaseAnonKey || 'sb_publishable_6l7u5vIJ420YUuYimTunkA_p2xS6MeW'
 )
 
 export interface FamilyMember {
