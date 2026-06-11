@@ -130,7 +130,7 @@ const Records: React.FC = () => {
                       </span>
                     </td>
                     <td className="py-4 px-4 text-gray-500 text-sm">
-                      {new Date(record.created_at).toLocaleString('zh-CN')}
+                      {record.created_at}
                     </td>
                   </tr>
                 ))}

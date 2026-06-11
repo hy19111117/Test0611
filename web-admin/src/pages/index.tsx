@@ -145,7 +145,7 @@ const Dashboard: React.FC = () => {
                   <div className="flex-1">
                     <p className="text-sm text-gray-800">{record.description}</p>
                     <p className="text-xs text-gray-500">
-                      {record.family_members?.name} · {new Date(record.created_at).toLocaleString('zh-CN')}
+                      {record.family_members?.name} · {record.created_at}
                     </p>
                   </div>
                   <span className={`font-semibold ${record.points > 0 ? 'text-green-500' : 'text-red-500'}`}>
