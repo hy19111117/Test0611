@@ -1,15 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // 解决 Vercel 找不到 public 目录、访问报错
   output: "standalone",
-
-  // 跳过TS报错、解决卡死构建
+  // 线上忽略TS/ESLint错误
   typescript: {
     ignoreBuildErrors: true
   },
   eslint: {
     ignoreDuringBuilds: true
-  }
+  },
+  // 强制客户端渲染，解决页面闪烁白屏
+  reactStrictMode: false
 }
 
 module.exports = nextConfig
