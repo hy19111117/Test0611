@@ -40,7 +40,7 @@
           {{index + 1}}
         </view>
         <view class="ranking-avatar" style="background: {{avatarColors[item.id % 5]}}">
-          <text>{{item.name?.charAt(0)}}</text>
+          <text>{{item.name && item.name.charAt(0) || ''}}</text>
         </view>
         <view class="ranking-info">
           <text class="ranking-name">{{item.name}}</text>

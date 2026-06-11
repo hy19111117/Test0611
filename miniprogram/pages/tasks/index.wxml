@@ -152,9 +152,9 @@
       </view>
       <view class="modal-body">
         <view class="request-task">
-          <text class="request-task-name">{{selectedTask?.name}}</text>
-          <text class="request-task-points" :class="selectedTask?.type === 'add' ? 'text-success' : 'text-danger'">
-            {{selectedTask?.type === 'add' ? '+' : ''}}{{selectedTask?.points}}
+          <text class="request-task-name">{{selectedTask && selectedTask.name || ''}}</text>
+          <text class="request-task-points {{selectedTask && selectedTask.type === 'add' ? 'text-success' : 'text-danger'}}">
+            {{selectedTask && selectedTask.type === 'add' ? '+' : ''}}{{selectedTask && selectedTask.points || 0}}
           </text>
         </view>
         <view class="form-item">

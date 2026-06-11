@@ -1,12 +1,12 @@
 <view class="container">
   <view class="profile-card card">
-    <view class="profile-avatar" style="background: {{avatarColors[member?.id % 5]}}">
-      <text>{{member?.name?.charAt(0)}}</text>
+    <view class="profile-avatar" style="background: {{avatarColors[(member && member.id || 0) % 5]}}">
+      <text>{{member && member.name && member.name.charAt(0) || ''}}</text>
     </view>
     <view class="profile-info">
-      <text class="profile-name">{{member?.name}}</text>
-      <text class="profile-role" :class="member?.role === 'parent' ? 'role-parent' : 'role-child'">
-        {{member?.role === 'parent' ? '家长' : '孩子'}}
+      <text class="profile-name">{{member && member.name || ''}}</text>
+      <text class="profile-role {{member && member.role === 'parent' ? 'role-parent' : 'role-child'}}">
+        {{member && member.role === 'parent' ? '家长' : '孩子'}}
       </text>
     </view>
     <view class="profile-edit" wx:if="{{isParent}}" bindtap="showEditModal">
@@ -16,7 +16,7 @@
 
   <view class="points-summary card">
     <view class="summary-item">
-      <text class="summary-value">{{member?.points || 0}}</text>
+      <text class="summary-value">{{member && member.points || 0}}</text>
       <text class="summary-label">当前积分</text>
     </view>
     <view class="summary-divider"></view>
@@ -78,7 +78,7 @@
         <text class="action-text">兑换记录</text>
         <text class="action-arrow">›</text>
       </view>
-      <view class="action-item delete" wx:if="{{isParent && member?.role === 'child'}}" bindtap="deleteMember">
+      <view class="action-item delete" wx:if="{{isParent && member && member.role === 'child'}}" bindtap="deleteMember">
         <text class="action-icon">🗑️</text>
         <text class="action-text">删除成员</text>
         <text class="action-arrow">›</text>

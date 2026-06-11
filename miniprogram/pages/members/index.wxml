@@ -12,12 +12,12 @@
       data-id="{{item.id}}"
     >
       <view class="member-avatar" style="background: {{avatarColors[item.id % 5]}}">
-        <text>{{item.name?.charAt(0)}}</text>
+        <text>{{item.name && item.name.charAt(0) || ''}}</text>
       </view>
       <view class="member-info">
         <view class="member-header">
           <text class="member-name">{{item.name}}</text>
-          <text class="member-role" :class="item.role === 'parent' ? 'role-parent' : 'role-child'">
+          <text class="member-role {{item.role === 'parent' ? 'role-parent' : 'role-child'}}">
             {{item.role === 'parent' ? '家长' : '孩子'}}
           </text>
         </view>

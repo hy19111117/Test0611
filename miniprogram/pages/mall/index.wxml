@@ -103,7 +103,7 @@
   <view class="modal-overlay" wx:if="{{showDetailModal}}" bindtap="hideDetailModal">
     <view class="modal-content detail-modal" catchtap="stopPropagation">
       <view class="modal-header">
-        <text class="modal-title">{{selectedProduct?.name}}</text>
+        <text class="modal-title">{{selectedProduct && selectedProduct.name || ''}}</text>
         <text class="modal-close" bindtap="hideDetailModal">×</text>
       </view>
       <view class="modal-body">
@@ -111,23 +111,23 @@
           <text class="image-placeholder">🎁</text>
         </view>
         <view class="detail-info">
-          <text class="detail-desc">{{selectedProduct?.description || '暂无描述'}}</text>
+          <text class="detail-desc">{{selectedProduct && selectedProduct.description || '暂无描述'}}</text>
           <view class="detail-row">
             <text class="detail-label">所需积分</text>
             <view class="detail-points">
               <text class="points-icon">⭐</text>
-              <text class="points-num">{{selectedProduct?.points}}</text>
+              <text class="points-num">{{selectedProduct && selectedProduct.points || 0}}</text>
             </view>
           </view>
           <view class="detail-row">
             <text class="detail-label">库存数量</text>
-            <text class="detail-stock" :class="selectedProduct?.stock > 0 ? '' : 'stock-out'">
-              {{selectedProduct?.stock > 0 ? `${selectedProduct?.stock} 件` : '已售罄'}}
+            <text class="detail-stock {{selectedProduct && selectedProduct.stock > 0 ? '' : 'stock-out'}}">
+              {{selectedProduct && selectedProduct.stock > 0 ? selectedProduct.stock + ' 件' : '已售罄'}}
             </text>
           </view>
           <view class="detail-row">
             <text class="detail-label">我的积分</text>
-            <text class="detail-my-points">{{currentUser?.points || 0}}</text>
+            <text class="detail-my-points">{{currentUser && currentUser.points || 0}}</text>
           </view>
         </view>
       </view>
@@ -135,9 +135,9 @@
         <button 
           class="btn-primary exchange-btn" 
           bindtap="exchangeProduct"
-          :disabled="!canExchange"
+          disabled="{{!canExchange}}"
         >
-          {{canExchange ? '立即兑换' : (currentUser?.points < selectedProduct?.points ? '积分不足' : '库存不足')}}
+          {{canExchange ? '立即兑换' : ((currentUser && currentUser.points || 0) < (selectedProduct && selectedProduct.points || 0) ? '积分不足' : '库存不足')}}
         </button>
       </view>
     </view>

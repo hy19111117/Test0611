@@ -34,19 +34,19 @@
       wx:key="id"
     >
       <view class="request-header">
-        <view class="request-avatar" style="background: {{avatarColors[item.family_members?.id % 5]}}">
-          <text>{{item.family_members?.name?.charAt(0)}}</text>
+        <view class="request-avatar" style="background: {{avatarColors[(item.family_members && item.family_members.id || 0) % 5]}}">
+          <text>{{item.family_members && item.family_members.name && item.family_members.name.charAt(0) || ''}}</text>
         </view>
         <view class="request-info">
-          <text class="request-name">{{item.family_members?.name}}</text>
+          <text class="request-name">{{item.family_members && item.family_members.name || ''}}</text>
           <text class="request-time">{{formatTime(item.created_at)}}</text>
         </view>
-        <view class="request-status" :class="getStatusClass(item.status)">
+        <view class="request-status {{getStatusClass(item.status)}}">
           {{getStatusText(item.status)}}
         </view>
       </view>
       <view class="request-body">
-        <text class="request-product">{{item.products?.name || '未知商品'}}</text>
+        <text class="request-product">{{item.products && item.products.name || '未知商品'}}</text>
         <view class="request-points">
           <text class="points-icon">⭐</text>
           <text class="points-num">{{item.points}}</text> 积分
