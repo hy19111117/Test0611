@@ -184,7 +184,7 @@ export async function deleteTask(id: string): Promise<boolean> {
 export async function getPointRequests(status?: string): Promise<PointRequest[]> {
   let query = supabase
     .from('point_requests')
-    .select('*, family_members(name, avatar, role), tasks(name)')
+    .select('*')
     .order('created_at', { ascending: false })
   
   if (status) {
@@ -197,7 +197,27 @@ export async function getPointRequests(status?: string): Promise<PointRequest[]>
     console.error('获取积分申请失败:', error)
     return []
   }
-  return data
+  
+  if (!data || data.length === 0) {
+    return []
+  }
+  
+  const memberIds = [...new Set(data.map(r => r.member_id))]
+  const taskIds = [...new Set(data.map(r => r.task_id))]
+  
+  const [membersResult, tasksResult] = await Promise.all([
+    supabase.from('family_members').select('id, name, avatar, role').in('id', memberIds),
+    supabase.from('tasks').select('id, name').in('id', taskIds)
+  ])
+  
+  const memberMap = new Map((membersResult.data || []).map(m => [m.id, m]))
+  const taskMap = new Map((tasksResult.data || []).map(t => [t.id, t]))
+  
+  return data.map(request => ({
+    ...request,
+    family_members: memberMap.get(request.member_id),
+    tasks: taskMap.get(request.task_id)
+  }))
 }
 
 export async function approvePointRequest(id: string): Promise<PointRequest | null> {
@@ -287,7 +307,7 @@ export async function addPointRecord(record: Omit<PointRecord, 'id' | 'created_a
 export async function getPointRecords(memberId?: string): Promise<PointRecord[]> {
   let query = supabase
     .from('point_records')
-    .select('*, family_members(name, avatar)')
+    .select('*')
     .order('created_at', { ascending: false })
   
   if (memberId) {
@@ -300,7 +320,26 @@ export async function getPointRecords(memberId?: string): Promise<PointRecord[]>
     console.error('获取积分记录失败:', error)
     return []
   }
-  return data
+  
+  if (!data || data.length === 0) {
+    return []
+  }
+  
+  const memberIds = [...new Set(data.map(r => r.member_id))]
+  const { data: members, error: membersError } = await supabase
+    .from('family_members')
+    .select('id, name, avatar')
+    .in('id', memberIds)
+  
+  if (membersError || !members) {
+    return data
+  }
+  
+  const memberMap = new Map(members.map(m => [m.id, m]))
+  return data.map(record => ({
+    ...record,
+    family_members: memberMap.get(record.member_id)
+  }))
 }
 
 export async function getProducts(): Promise<Product[]> {
@@ -358,7 +397,7 @@ export async function deleteProduct(id: string): Promise<boolean> {
 export async function getExchangeRequests(status?: string): Promise<ExchangeRequest[]> {
   let query = supabase
     .from('exchange_requests')
-    .select('*, family_members(name, avatar), products(name, points)')
+    .select('*')
     .order('created_at', { ascending: false })
   
   if (status) {
@@ -371,7 +410,27 @@ export async function getExchangeRequests(status?: string): Promise<ExchangeRequ
     console.error('获取兑换申请失败:', error)
     return []
   }
-  return data
+  
+  if (!data || data.length === 0) {
+    return []
+  }
+  
+  const memberIds = [...new Set(data.map(r => r.member_id))]
+  const productIds = [...new Set(data.map(r => r.product_id))]
+  
+  const [membersResult, productsResult] = await Promise.all([
+    supabase.from('family_members').select('id, name, avatar').in('id', memberIds),
+    supabase.from('products').select('id, name, points').in('id', productIds)
+  ])
+  
+  const memberMap = new Map((membersResult.data || []).map(m => [m.id, m]))
+  const productMap = new Map((productsResult.data || []).map(p => [p.id, p]))
+  
+  return data.map(request => ({
+    ...request,
+    family_members: memberMap.get(request.member_id),
+    products: productMap.get(request.product_id)
+  }))
 }
 
 export async function approveExchangeRequest(id: string): Promise<ExchangeRequest | null> {
