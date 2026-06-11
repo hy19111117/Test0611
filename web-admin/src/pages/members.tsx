@@ -1,3 +1,4 @@
+'use client'
 import React, { useEffect, useState } from 'react'
 import Layout from '../components/Layout'
 import { getFamilyMembers, addFamilyMember, updateFamilyMember, deleteFamilyMember } from '../utils/supabase'
