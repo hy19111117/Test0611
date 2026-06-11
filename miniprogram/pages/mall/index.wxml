@@ -33,8 +33,8 @@
             <text class="points-icon">⭐</text>
             <text class="points-num">{{item.points}}</text>
           </view>
-          <text class="product-stock" :class="item.stock > 0 ? '' : 'stock-out'">
-            {{item.stock > 0 ? `库存: ${item.stock}` : '已售罄'}}
+          <text class="product-stock {{item.stock > 0 ? '' : 'stock-out'}}">
+            {{item.stock > 0 ? '库存: ' + item.stock : '已售罄'}}
           </text>
         </view>
       </view>
