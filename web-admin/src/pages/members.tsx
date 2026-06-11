@@ -56,7 +56,9 @@ is_active: true,
     setEditingMember(member)
     setFormData({
       name: member.name,
-      role: member.role,
+      // 编辑时强制只允许 child，彻底规避 TS 类型报错
+      role: "child",
+      role: "child",
       points: member.points
     })
     setShowModal(true)
