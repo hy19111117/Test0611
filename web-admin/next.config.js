@@ -1,6 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // 直接解决卡在 Linting 不动
+  // 解决 Vercel 找不到 public 目录、访问报错
+  output: "standalone",
+
+  // 跳过TS报错、解决卡死构建
   typescript: {
     ignoreBuildErrors: true
   },
