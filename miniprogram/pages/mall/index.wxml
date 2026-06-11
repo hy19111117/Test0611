@@ -1,0 +1,145 @@
+<view class="container">
+  <view class="header-card card">
+    <view class="header-info">
+      <text class="header-title">🎁 积分商城</text>
+      <text class="header-desc">用积分兑换心仪的奖品吧！</text>
+    </view>
+    <view class="my-points">
+      <text class="points-label">我的积分</text>
+      <text class="points-value">{{currentUser?.points || 0}}</text>
+    </view>
+  </view>
+
+  <view class="add-btn" wx:if="{{isParent}}" bindtap="showAddModal">
+    <text class="add-icon">+</text>
+  </view>
+
+  <view class="products-grid">
+    <view 
+      class="product-card card" 
+      wx:for="{{products}}" 
+      wx:key="id"
+      bindtap="showProductDetail"
+      data-product="{{item}}"
+    >
+      <view class="product-image">
+        <text class="image-placeholder">🎁</text>
+      </view>
+      <view class="product-info">
+        <text class="product-name">{{item.name}}</text>
+        <text class="product-desc">{{item.description || '暂无描述'}}</text>
+        <view class="product-footer">
+          <view class="product-points">
+            <text class="points-icon">⭐</text>
+            <text class="points-num">{{item.points}}</text>
+          </view>
+          <text class="product-stock" :class="item.stock > 0 ? '' : 'stock-out'">
+            {{item.stock > 0 ? `库存: ${item.stock}` : '已售罄'}}
+          </text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{products.length === 0}}" class="empty-state">
+    <text class="empty-icon">🛒</text>
+    <text class="empty-text">商城暂无商品</text>
+    <text class="empty-hint" wx:if="{{isParent}}">点击右下角添加商品</text>
+  </view>
+
+  <view class="modal-overlay" wx:if="{{showModal}}" bindtap="hideModal">
+    <view class="modal-content" catchtap="stopPropagation">
+      <view class="modal-header">
+        <text class="modal-title">{{editingProduct ? '编辑商品' : '添加商品'}}</text>
+        <text class="modal-close" bindtap="hideModal">×</text>
+      </view>
+      <view class="modal-body">
+        <view class="form-item">
+          <text class="form-label">商品名称</text>
+          <input 
+            class="form-input" 
+            placeholder="请输入商品名称" 
+            value="{{formData.name}}"
+            bindinput="onNameInput"
+          />
+        </view>
+        <view class="form-item">
+          <text class="form-label">商品描述</text>
+          <textarea 
+            class="form-textarea" 
+            placeholder="请输入商品描述" 
+            value="{{formData.description}}"
+            bindinput="onDescInput"
+          />
+        </view>
+        <view class="form-item">
+          <text class="form-label">积分价格</text>
+          <input 
+            class="form-input" 
+            type="number"
+            placeholder="请输入积分价格" 
+            value="{{formData.points}}"
+            bindinput="onPointsInput"
+          />
+        </view>
+        <view class="form-item">
+          <text class="form-label">库存数量</text>
+          <input 
+            class="form-input" 
+            type="number"
+            placeholder="请输入库存数量" 
+            value="{{formData.stock}}"
+            bindinput="onStockInput"
+          />
+        </view>
+      </view>
+      <view class="modal-footer">
+        <button class="btn-secondary" bindtap="hideModal">取消</button>
+        <button class="btn-primary" bindtap="saveProduct">保存</button>
+      </view>
+    </view>
+  </view>
+
+  <view class="modal-overlay" wx:if="{{showDetailModal}}" bindtap="hideDetailModal">
+    <view class="modal-content detail-modal" catchtap="stopPropagation">
+      <view class="modal-header">
+        <text class="modal-title">{{selectedProduct?.name}}</text>
+        <text class="modal-close" bindtap="hideDetailModal">×</text>
+      </view>
+      <view class="modal-body">
+        <view class="detail-image">
+          <text class="image-placeholder">🎁</text>
+        </view>
+        <view class="detail-info">
+          <text class="detail-desc">{{selectedProduct?.description || '暂无描述'}}</text>
+          <view class="detail-row">
+            <text class="detail-label">所需积分</text>
+            <view class="detail-points">
+              <text class="points-icon">⭐</text>
+              <text class="points-num">{{selectedProduct?.points}}</text>
+            </view>
+          </view>
+          <view class="detail-row">
+            <text class="detail-label">库存数量</text>
+            <text class="detail-stock" :class="selectedProduct?.stock > 0 ? '' : 'stock-out'">
+              {{selectedProduct?.stock > 0 ? `${selectedProduct?.stock} 件` : '已售罄'}}
+            </text>
+          </view>
+          <view class="detail-row">
+            <text class="detail-label">我的积分</text>
+            <text class="detail-my-points">{{currentUser?.points || 0}}</text>
+          </view>
+        </view>
+      </view>
+      <view class="modal-footer">
+        <button 
+          class="btn-primary exchange-btn" 
+          bindtap="exchangeProduct"
+          :disabled="!canExchange"
+        >
+          {{canExchange ? '立即兑换' : (currentUser?.points < selectedProduct?.points ? '积分不足' : '库存不足')}}
+        </button>
+      </view>
+    </view>
+  </view>
+</view>

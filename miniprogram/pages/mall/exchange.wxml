@@ -1,0 +1,100 @@
+<view class="container">
+  <view class="tabs">
+    <view 
+      class="tab-item" 
+      :class="activeTab === 'pending' ? 'active' : ''"
+      bindtap="switchTab"
+      data-tab="pending"
+    >
+      <text>待审核</text>
+      <view class="badge" wx:if="{{pendingCount > 0}}">{{pendingCount}}</view>
+    </view>
+    <view 
+      class="tab-item" 
+      :class="activeTab === 'approved' ? 'active' : ''"
+      bindtap="switchTab"
+      data-tab="approved"
+    >
+      <text>已通过</text>
+    </view>
+    <view 
+      class="tab-item" 
+      :class="activeTab === 'rejected' ? 'active' : ''"
+      bindtap="switchTab"
+      data-tab="rejected"
+    >
+      <text>已驳回</text>
+    </view>
+  </view>
+
+  <view class="requests-list">
+    <view 
+      class="request-item card" 
+      wx:for="{{filteredRequests}}" 
+      wx:key="id"
+    >
+      <view class="request-header">
+        <view class="request-avatar" style="background: {{avatarColors[item.family_members?.id % 5]}}">
+          <text>{{item.family_members?.name?.charAt(0)}}</text>
+        </view>
+        <view class="request-info">
+          <text class="request-name">{{item.family_members?.name}}</text>
+          <text class="request-time">{{formatTime(item.created_at)}}</text>
+        </view>
+        <view class="request-status" :class="getStatusClass(item.status)">
+          {{getStatusText(item.status)}}
+        </view>
+      </view>
+      <view class="request-body">
+        <text class="request-product">{{item.products?.name || '未知商品'}}</text>
+        <view class="request-points">
+          <text class="points-icon">⭐</text>
+          <text class="points-num">{{item.points}}</text> 积分
+        </view>
+      </view>
+      <view class="request-footer">
+        <view class="request-actions" wx:if="{{isParent && item.status === 'pending'}}">
+          <view class="action-btn approve" bindtap="approveExchange" data-id="{{item.id}}">
+            <text>通过</text>
+          </view>
+          <view class="action-btn reject" bindtap="showRejectModal" data-id="{{item.id}}">
+            <text>驳回</text>
+          </view>
+        </view>
+        <view class="reject-reason" wx:if="{{item.status === 'rejected' && item.reject_reason}}">
+          <text class="reason-label">驳回原因:</text>
+          <text class="reason-text">{{item.reject_reason}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{filteredRequests.length === 0}}" class="empty-state">
+    <text class="empty-icon">🎁</text>
+    <text class="empty-text">{{getEmptyText()}}</text>
+  </view>
+
+  <view class="modal-overlay" wx:if="{{showRejectModal}}" bindtap="hideRejectModal">
+    <view class="modal-content" catchtap="stopPropagation">
+      <view class="modal-header">
+        <text class="modal-title">驳回兑换</text>
+        <text class="modal-close" bindtap="hideRejectModal">×</text>
+      </view>
+      <view class="modal-body">
+        <view class="form-item">
+          <text class="form-label">驳回原因</text>
+          <textarea 
+            class="form-textarea" 
+            placeholder="请输入驳回原因..." 
+            value="{{rejectReason}}"
+            bindinput="onRejectReasonInput"
+          />
+        </view>
+      </view>
+      <view class="modal-footer">
+        <button class="btn-secondary" bindtap="hideRejectModal">取消</button>
+        <button class="btn-primary reject-btn" bindtap="confirmReject">确认驳回</button>
+      </view>
+    </view>
+  </view>
+</view>

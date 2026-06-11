@@ -1,0 +1,344 @@
+.profile-card {
+  display: flex;
+  align-items: center;
+  padding: 32rpx;
+  background: linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 100%);
+}
+
+.profile-avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 44rpx;
+  font-weight: 600;
+  color: #ffffff;
+  border: 4rpx solid rgba(255, 255, 255, 0.3);
+  margin-right: 24rpx;
+}
+
+.profile-info {
+  flex: 1;
+}
+
+.profile-name {
+  display: block;
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 8rpx;
+}
+
+.profile-role {
+  font-size: 24rpx;
+  padding: 6rpx 20rpx;
+  border-radius: 20rpx;
+}
+
+.role-parent {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+
+.role-child {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+
+.profile-edit {
+  padding: 16rpx;
+}
+
+.edit-icon {
+  font-size: 40rpx;
+}
+
+.points-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 32rpx;
+}
+
+.summary-item {
+  text-align: center;
+}
+
+.summary-value {
+  display: block;
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #FF6B6B;
+  margin-bottom: 8rpx;
+}
+
+.summary-label {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.summary-divider {
+  width: 2rpx;
+  height: 60rpx;
+  background: #eee;
+}
+
+.section {
+  margin-top: 40rpx;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+  padding: 0 10rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.record-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.record-item {
+  display: flex;
+  align-items: center;
+  padding: 24rpx;
+}
+
+.record-icon {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  margin-right: 20rpx;
+}
+
+.icon-add {
+  background: #E8F5E9;
+}
+
+.icon-deduct {
+  background: #FFEBEE;
+}
+
+.icon-exchange {
+  background: #E3F2FD;
+}
+
+.icon-task {
+  background: #FFF3E0;
+}
+
+.icon-default {
+  background: #f5f5f5;
+}
+
+.record-info {
+  flex: 1;
+}
+
+.record-desc {
+  display: block;
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 4rpx;
+}
+
+.record-time {
+  font-size: 22rpx;
+  color: #999;
+}
+
+.record-points {
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+.empty-state {
+  padding: 60rpx;
+  text-align: center;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #999;
+}
+
+.action-list {
+  background: #ffffff;
+  border-radius: 20rpx;
+  overflow: hidden;
+}
+
+.action-item {
+  display: flex;
+  align-items: center;
+  padding: 28rpx 32rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.action-item:last-child {
+  border-bottom: none;
+}
+
+.action-item.delete {
+  color: #FF4D4F;
+}
+
+.action-icon {
+  font-size: 36rpx;
+  margin-right: 20rpx;
+}
+
+.action-text {
+  flex: 1;
+  font-size: 30rpx;
+  color: #333;
+}
+
+.action-item.delete .action-text {
+  color: #FF4D4F;
+}
+
+.action-arrow {
+  font-size: 36rpx;
+  color: #ccc;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  width: 600rpx;
+  background: #ffffff;
+  border-radius: 24rpx;
+  overflow: hidden;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32rpx;
+  border-bottom: 1rpx solid #eee;
+}
+
+.modal-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.modal-close {
+  font-size: 48rpx;
+  color: #999;
+  line-height: 1;
+}
+
+.modal-body {
+  padding: 32rpx;
+}
+
+.form-item {
+  margin-bottom: 32rpx;
+}
+
+.form-label {
+  display: block;
+  font-size: 28rpx;
+  color: #666;
+  margin-bottom: 16rpx;
+}
+
+.form-input {
+  width: 100%;
+  padding: 24rpx;
+  border: 2rpx solid #eee;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+}
+
+.points-input-group {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.points-input {
+  flex: 1;
+  text-align: center;
+}
+
+.points-btn {
+  padding: 24rpx 32rpx;
+  background: #f5f5f5;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  color: #666;
+}
+
+.form-textarea {
+  width: 100%;
+  height: 160rpx;
+  padding: 24rpx;
+  border: 2rpx solid #eee;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+}
+
+.role-options {
+  display: flex;
+  gap: 20rpx;
+}
+
+.role-option {
+  flex: 1;
+  padding: 24rpx;
+  text-align: center;
+  border: 2rpx solid #eee;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  color: #666;
+}
+
+.role-option.selected {
+  border-color: #FF6B6B;
+  background: #FFF5F5;
+  color: #FF6B6B;
+}
+
+.modal-footer {
+  display: flex;
+  gap: 20rpx;
+  padding: 24rpx 32rpx;
+  border-top: 1rpx solid #eee;
+}
+
+.modal-footer .btn-secondary,
+.modal-footer .btn-primary {
+  flex: 1;
+  padding: 24rpx;
+}

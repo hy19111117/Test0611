@@ -1,0 +1,273 @@
+.tabs {
+  display: flex;
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 8rpx;
+  margin-bottom: 20rpx;
+}
+
+.tab-item {
+  flex: 1;
+  padding: 20rpx;
+  text-align: center;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  color: #666;
+  position: relative;
+}
+
+.tab-item.active {
+  background: linear-gradient(135deg, #FF6B6B, #FF8E8E);
+  color: #ffffff;
+}
+
+.badge {
+  position: absolute;
+  top: 8rpx;
+  right: 20rpx;
+  min-width: 32rpx;
+  height: 32rpx;
+  background: #FF4D4F;
+  color: #ffffff;
+  border-radius: 16rpx;
+  font-size: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 8rpx;
+}
+
+.requests-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.request-item {
+  padding: 28rpx;
+}
+
+.request-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.request-avatar {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #ffffff;
+  margin-right: 20rpx;
+}
+
+.request-info {
+  flex: 1;
+}
+
+.request-name {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4rpx;
+}
+
+.request-time {
+  font-size: 22rpx;
+  color: #999;
+}
+
+.request-status {
+  font-size: 24rpx;
+  padding: 8rpx 20rpx;
+  border-radius: 20rpx;
+}
+
+.status-pending {
+  background: #FFF7E6;
+  color: #FA8C16;
+}
+
+.status-approved {
+  background: #E8F5E9;
+  color: #388E3C;
+}
+
+.status-rejected {
+  background: #FFEBEE;
+  color: #FF4D4F;
+}
+
+.request-body {
+  padding: 20rpx;
+  background: #f8f9fa;
+  border-radius: 12rpx;
+  margin-bottom: 20rpx;
+}
+
+.request-task {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.request-desc {
+  font-size: 24rpx;
+  color: #999;
+  line-height: 1.5;
+}
+
+.request-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.request-points {
+  font-size: 32rpx;
+  font-weight: 700;
+}
+
+.request-actions {
+  display: flex;
+  gap: 16rpx;
+}
+
+.action-btn {
+  padding: 16rpx 32rpx;
+  border-radius: 20rpx;
+  font-size: 26rpx;
+}
+
+.action-btn.approve {
+  background: #52C41A;
+  color: #ffffff;
+}
+
+.action-btn.reject {
+  background: #FF4D4F;
+  color: #ffffff;
+}
+
+.reject-reason {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.reason-label {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.reason-text {
+  font-size: 24rpx;
+  color: #FF4D4F;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 120rpx 40rpx;
+}
+
+.empty-icon {
+  font-size: 120rpx;
+  margin-bottom: 30rpx;
+}
+
+.empty-text {
+  font-size: 32rpx;
+  color: #666;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  width: 600rpx;
+  background: #ffffff;
+  border-radius: 24rpx;
+  overflow: hidden;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32rpx;
+  border-bottom: 1rpx solid #eee;
+}
+
+.modal-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.modal-close {
+  font-size: 48rpx;
+  color: #999;
+  line-height: 1;
+}
+
+.modal-body {
+  padding: 32rpx;
+}
+
+.form-item {
+  margin-bottom: 32rpx;
+}
+
+.form-label {
+  display: block;
+  font-size: 28rpx;
+  color: #666;
+  margin-bottom: 16rpx;
+}
+
+.form-textarea {
+  width: 100%;
+  height: 160rpx;
+  padding: 24rpx;
+  border: 2rpx solid #eee;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+}
+
+.modal-footer {
+  display: flex;
+  gap: 20rpx;
+  padding: 24rpx 32rpx;
+  border-top: 1rpx solid #eee;
+}
+
+.modal-footer .btn-secondary {
+  flex: 1;
+  padding: 24rpx;
+}
+
+.btn-primary.reject-btn {
+  flex: 1;
+  padding: 24rpx;
+  background: #FF4D4F;
+}

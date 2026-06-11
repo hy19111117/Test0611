@@ -1,0 +1,176 @@
+<view class="container">
+  <view class="tabs">
+    <view 
+      class="tab-item" 
+      :class="activeTab === 'all' ? 'active' : ''"
+      bindtap="switchTab"
+      data-tab="all"
+    >
+      <text>全部任务</text>
+    </view>
+    <view 
+      class="tab-item" 
+      :class="activeTab === 'add' ? 'active' : ''"
+      bindtap="switchTab"
+      data-tab="add"
+    >
+      <text>加分任务</text>
+    </view>
+    <view 
+      class="tab-item" 
+      :class="activeTab === 'deduct' ? 'active' : ''"
+      bindtap="switchTab"
+      data-tab="deduct"
+    >
+      <text>扣分任务</text>
+    </view>
+  </view>
+
+  <view class="add-btn" wx:if="{{isParent}}" bindtap="showAddModal">
+    <text class="add-icon">+</text>
+  </view>
+
+  <view class="tasks-list">
+    <view 
+      class="task-card card" 
+      wx:for="{{filteredTasks}}" 
+      wx:key="id"
+    >
+      <view class="task-icon" :class="item.type === 'add' ? 'icon-add' : 'icon-deduct'">
+        <text>{{item.type === 'add' ? '⭐' : '⚠️'}}</text>
+      </view>
+      <view class="task-info">
+        <view class="task-header">
+          <text class="task-name">{{item.name}}</text>
+          <text class="task-status" :class="item.is_active ? 'active' : 'inactive'">
+            {{item.is_active ? '进行中' : '已暂停'}}
+          </text>
+        </view>
+        <text class="task-desc">{{item.description || '暂无描述'}}</text>
+      </view>
+      <view class="task-action">
+        <view class="task-points" :class="item.type === 'add' ? 'text-success' : 'text-danger'">
+          {{item.type === 'add' ? '+' : ''}}{{item.points}}
+        </view>
+        <view class="action-buttons">
+          <view 
+            wx:if="{{isParent}}" 
+            class="action-btn edit"
+            bindtap="showEditModal"
+            data-task="{{item}}"
+          >
+            <text>编辑</text>
+          </view>
+          <view 
+            wx:if="{{!isParent && item.is_active}}" 
+            class="action-btn submit"
+            bindtap="submitRequest"
+            data-task="{{item}}"
+          >
+            <text>申请</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{filteredTasks.length === 0}}" class="empty-state">
+    <text class="empty-icon">📋</text>
+    <text class="empty-text">暂无任务</text>
+    <text class="empty-hint" wx:if="{{isParent}}">点击右下角添加任务</text>
+  </view>
+
+  <view class="modal-overlay" wx:if="{{showModal}}" bindtap="hideModal">
+    <view class="modal-content" catchtap="stopPropagation">
+      <view class="modal-header">
+        <text class="modal-title">{{editingTask ? '编辑任务' : '添加任务'}}</text>
+        <text class="modal-close" bindtap="hideModal">×</text>
+      </view>
+      <view class="modal-body">
+        <view class="form-item">
+          <text class="form-label">任务名称</text>
+          <input 
+            class="form-input" 
+            placeholder="请输入任务名称" 
+            value="{{formData.name}}"
+            bindinput="onNameInput"
+          />
+        </view>
+        <view class="form-item">
+          <text class="form-label">任务描述</text>
+          <textarea 
+            class="form-textarea" 
+            placeholder="请输入任务描述" 
+            value="{{formData.description}}"
+            bindinput="onDescInput"
+          />
+        </view>
+        <view class="form-item">
+          <text class="form-label">任务类型</text>
+          <view class="type-options">
+            <view 
+              class="type-option" 
+              :class="formData.type === 'add' ? 'selected' : ''"
+              bindtap="selectType"
+              data-type="add"
+            >
+              <text>加分任务</text>
+            </view>
+            <view 
+              class="type-option" 
+              :class="formData.type === 'deduct' ? 'selected' : ''"
+              bindtap="selectType"
+              data-type="deduct"
+            >
+              <text>扣分任务</text>
+            </view>
+          </view>
+        </view>
+        <view class="form-item">
+          <text class="form-label">积分值</text>
+          <input 
+            class="form-input" 
+            type="number"
+            placeholder="请输入积分值" 
+            value="{{formData.points}}"
+            bindinput="onPointsInput"
+          />
+        </view>
+      </view>
+      <view class="modal-footer">
+        <button class="btn-secondary" bindtap="hideModal">取消</button>
+        <button class="btn-primary" bindtap="saveTask">保存</button>
+      </view>
+    </view>
+  </view>
+
+  <view class="modal-overlay" wx:if="{{showRequestModal}}" bindtap="hideRequestModal">
+    <view class="modal-content" catchtap="stopPropagation">
+      <view class="modal-header">
+        <text class="modal-title">申请积分</text>
+        <text class="modal-close" bindtap="hideRequestModal">×</text>
+      </view>
+      <view class="modal-body">
+        <view class="request-task">
+          <text class="request-task-name">{{selectedTask?.name}}</text>
+          <text class="request-task-points" :class="selectedTask?.type === 'add' ? 'text-success' : 'text-danger'">
+            {{selectedTask?.type === 'add' ? '+' : ''}}{{selectedTask?.points}}
+          </text>
+        </view>
+        <view class="form-item">
+          <text class="form-label">申请说明</text>
+          <textarea 
+            class="form-textarea" 
+            placeholder="请简单说明完成情况..." 
+            value="{{requestDesc}}"
+            bindinput="onRequestDescInput"
+          />
+        </view>
+      </view>
+      <view class="modal-footer">
+        <button class="btn-secondary" bindtap="hideRequestModal">取消</button>
+        <button class="btn-primary" bindtap="confirmRequest">确认申请</button>
+      </view>
+    </view>
+  </view>
+</view>

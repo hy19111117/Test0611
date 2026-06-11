@@ -1,0 +1,124 @@
+.members-list {
+  margin-top: 24rpx;
+}
+
+.member-card {
+  display: flex;
+  align-items: center;
+  padding: 28rpx;
+}
+
+.member-avatar {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #ffffff;
+  margin-right: 24rpx;
+}
+
+.member-info {
+  flex: 1;
+}
+
+.member-header {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-bottom: 12rpx;
+}
+
+.member-name {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.member-role {
+  font-size: 22rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 20rpx;
+}
+
+.role-parent {
+  background: #E74C3C;
+  color: #ffffff;
+}
+
+.role-child {
+  background: #F0E68C;
+  color: #8B4513;
+}
+
+.member-stats {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+}
+
+.stat-item {
+  display: flex;
+  align-items: baseline;
+  gap: 8rpx;
+}
+
+.stat-value {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #FF6B6B;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #999999;
+}
+
+.stat-divider {
+  width: 2rpx;
+  height: 32rpx;
+  background: #EEEEEE;
+}
+
+.member-status {
+  display: flex;
+  align-items: center;
+}
+
+.status-dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+}
+
+.status-dot.active {
+  background: #27AE60;
+}
+
+.status-dot.inactive {
+  background: #CCCCCC;
+}
+
+.role-options {
+  display: flex;
+  gap: 20rpx;
+}
+
+.role-option {
+  flex: 1;
+  padding: 20rpx;
+  text-align: center;
+  border: 2rpx solid #EEEEEE;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  color: #666666;
+}
+
+.role-option.selected {
+  border-color: #FF6B6B;
+  background: rgba(255, 107, 107, 0.1);
+  color: #FF6B6B;
+}

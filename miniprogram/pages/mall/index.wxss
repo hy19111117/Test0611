@@ -1,0 +1,174 @@
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20rpx;
+  margin-top: 24rpx;
+}
+
+.product-card {
+  background: #ffffff;
+  border-radius: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.08);
+}
+
+.product-image {
+  width: 100%;
+  height: 200rpx;
+  background: linear-gradient(135deg, #FFEAA7, #FFD93D);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 64rpx;
+}
+
+.product-info {
+  padding: 20rpx;
+}
+
+.product-name {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 8rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.product-desc {
+  display: block;
+  font-size: 24rpx;
+  color: #999999;
+  margin-bottom: 12rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.product-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.product-points {
+  display: flex;
+  align-items: baseline;
+  gap: 4rpx;
+}
+
+.points-value {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #FF6B6B;
+}
+
+.points-label {
+  font-size: 24rpx;
+  color: #999999;
+}
+
+.product-stock {
+  font-size: 22rpx;
+  color: #999999;
+}
+
+.stock-low {
+  color: #E74C3C;
+}
+
+.my-points-bar {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  padding: 28rpx;
+  border-radius: 20rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.my-points-label {
+  font-size: 28rpx;
+  opacity: 0.9;
+}
+
+.my-points-value {
+  font-size: 48rpx;
+  font-weight: 700;
+}
+
+.product-detail-header {
+  display: flex;
+  gap: 24rpx;
+  margin-bottom: 24rpx;
+}
+
+.detail-image {
+  width: 200rpx;
+  height: 200rpx;
+  background: linear-gradient(135deg, #FFEAA7, #FFD93D);
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 80rpx;
+}
+
+.detail-info {
+  flex: 1;
+}
+
+.detail-name {
+  display: block;
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 12rpx;
+}
+
+.detail-desc {
+  display: block;
+  font-size: 28rpx;
+  color: #999999;
+  margin-bottom: 16rpx;
+}
+
+.detail-points {
+  display: flex;
+  align-items: baseline;
+  gap: 8rpx;
+}
+
+.detail-points-value {
+  font-size: 48rpx;
+  font-weight: 700;
+  color: #FF6B6B;
+}
+
+.detail-points-label {
+  font-size: 28rpx;
+  color: #999999;
+}
+
+.detail-stock {
+  display: block;
+  font-size: 26rpx;
+  color: #999999;
+  margin-top: 8rpx;
+}
+
+.exchange-btn {
+  width: 100%;
+  padding: 28rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+  margin-top: 24rpx;
+}
+
+.exchange-btn.disabled {
+  background: #CCCCCC;
+  color: #999999;
+}

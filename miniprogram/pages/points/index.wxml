@@ -1,0 +1,158 @@
+<view class="container">
+  <view class="tabs">
+    <view 
+      class="tab-item" 
+      :class="activeTab === 'ranking' ? 'active' : ''"
+      bindtap="switchTab"
+      data-tab="ranking"
+    >
+      <text>排行榜</text>
+    </view>
+    <view 
+      class="tab-item" 
+      :class="activeTab === 'records' ? 'active' : ''"
+      bindtap="switchTab"
+      data-tab="records"
+    >
+      <text>积分明细</text>
+    </view>
+    <view 
+      class="tab-item" 
+      :class="activeTab === 'stats' ? 'active' : ''"
+      bindtap="switchTab"
+      data-tab="stats"
+    >
+      <text>统计分析</text>
+    </view>
+  </view>
+
+  <view wx:if="{{activeTab === 'ranking'}}" class="ranking-section">
+    <view class="ranking-header">
+      <text class="ranking-title">🏆 积分排行榜</text>
+    </view>
+    <view class="ranking-list">
+      <view 
+        class="ranking-item card" 
+        wx:for="{{ranking}}" 
+        wx:key="id"
+      >
+        <view class="ranking-badge" :class="'rank-' + (index + 1)">
+          {{index + 1}}
+        </view>
+        <view class="ranking-avatar" style="background: {{avatarColors[item.id % 5]}}">
+          <text>{{item.name?.charAt(0)}}</text>
+        </view>
+        <view class="ranking-info">
+          <text class="ranking-name">{{item.name}}</text>
+          <text class="ranking-role">{{item.role === 'parent' ? '家长' : '孩子'}}</text>
+        </view>
+        <view class="ranking-points">
+          <text class="points-num">{{item.points}}</text>
+          <text class="points-unit">积分</text>
+        </view>
+      </view>
+    </view>
+    <view wx:if="{{ranking.length === 0}}" class="empty-state">
+      <text class="empty-icon">👑</text>
+      <text class="empty-text">暂无排行数据</text>
+    </view>
+  </view>
+
+  <view wx:if="{{activeTab === 'records'}}" class="records-section">
+    <view class="filter-bar">
+      <view 
+        class="filter-item" 
+        :class="filterType === 'all' ? 'active' : ''"
+        bindtap="setFilter"
+        data-type="all"
+      >
+        <text>全部</text>
+      </view>
+      <view 
+        class="filter-item" 
+        :class="filterType === 'add' ? 'active' : ''"
+        bindtap="setFilter"
+        data-type="add"
+      >
+        <text>收入</text>
+      </view>
+      <view 
+        class="filter-item" 
+        :class="filterType === 'deduct' ? 'active' : ''"
+        bindtap="setFilter"
+        data-type="deduct"
+      >
+        <text>支出</text>
+      </view>
+    </view>
+    <view class="records-list">
+      <view 
+        class="record-item card" 
+        wx:for="{{filteredRecords}}" 
+        wx:key="id"
+      >
+        <view class="record-icon" :class="recordIconClass(item.type)">
+          <text>{{recordIcon(item.type)}}</text>
+        </view>
+        <view class="record-info">
+          <text class="record-desc">{{item.description || getDefaultDesc(item.type)}}</text>
+          <text class="record-time">{{formatTime(item.created_at)}}</text>
+        </view>
+        <view class="record-points" :class="item.points > 0 ? 'text-success' : 'text-danger'">
+          {{item.points > 0 ? '+' : ''}}{{item.points}}
+        </view>
+      </view>
+    </view>
+    <view wx:if="{{filteredRecords.length === 0}}" class="empty-state">
+      <text class="empty-icon">📊</text>
+      <text class="empty-text">暂无积分记录</text>
+    </view>
+  </view>
+
+  <view wx:if="{{activeTab === 'stats'}}" class="stats-section">
+    <view class="stats-card card">
+      <text class="stats-title">📈 本周统计</text>
+      <view class="stats-grid">
+        <view class="stat-item">
+          <text class="stat-value">{{weeklyStats.total}}</text>
+          <text class="stat-label">总变动</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-value text-success">+{{weeklyStats.earned}}</text>
+          <text class="stat-label">收入</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-value text-danger">-{{weeklyStats.spent}}</text>
+          <text class="stat-label">支出</text>
+        </view>
+      </view>
+    </view>
+    <view class="stats-card card">
+      <text class="stats-title">📅 本月统计</text>
+      <view class="stats-grid">
+        <view class="stat-item">
+          <text class="stat-value">{{monthlyStats.total}}</text>
+          <text class="stat-label">总变动</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-value text-success">+{{monthlyStats.earned}}</text>
+          <text class="stat-label">收入</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-value text-danger">-{{monthlyStats.spent}}</text>
+          <text class="stat-label">支出</text>
+        </view>
+      </view>
+    </view>
+    <view class="stats-card card">
+      <text class="stats-title">🔥 任务统计</text>
+      <view class="task-stats">
+        <view class="task-stat-item" wx:for="{{taskStats}}" wx:key="name">
+          <text class="task-stat-name">{{item.name}}</text>
+          <text class="task-stat-count">{{item.count}}次</text>
+          <text class="task-stat-points">{{item.points > 0 ? '+' : ''}}{{item.points}}积分</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

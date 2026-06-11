@@ -1,0 +1,171 @@
+<view class="container">
+  <view class="profile-card card">
+    <view class="profile-avatar" style="background: {{avatarColors[member?.id % 5]}}">
+      <text>{{member?.name?.charAt(0)}}</text>
+    </view>
+    <view class="profile-info">
+      <text class="profile-name">{{member?.name}}</text>
+      <text class="profile-role" :class="member?.role === 'parent' ? 'role-parent' : 'role-child'">
+        {{member?.role === 'parent' ? '家长' : '孩子'}}
+      </text>
+    </view>
+    <view class="profile-edit" wx:if="{{isParent}}" bindtap="showEditModal">
+      <text class="edit-icon">✏️</text>
+    </view>
+  </view>
+
+  <view class="points-summary card">
+    <view class="summary-item">
+      <text class="summary-value">{{member?.points || 0}}</text>
+      <text class="summary-label">当前积分</text>
+    </view>
+    <view class="summary-divider"></view>
+    <view class="summary-item">
+      <text class="summary-value">{{totalEarned}}</text>
+      <text class="summary-label">累计获得</text>
+    </view>
+    <view class="summary-divider"></view>
+    <view class="summary-item">
+      <text class="summary-value">{{totalSpent}}</text>
+      <text class="summary-label">累计消耗</text>
+    </view>
+  </view>
+
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">积分记录</text>
+    </view>
+    <view class="record-list">
+      <view 
+        class="record-item card" 
+        wx:for="{{records}}" 
+        wx:key="id"
+      >
+        <view class="record-icon" :class="recordIconClass(item.type)">
+          <text>{{recordIcon(item.type)}}</text>
+        </view>
+        <view class="record-info">
+          <text class="record-desc">{{item.description || getDefaultDesc(item.type)}}</text>
+          <text class="record-time">{{formatTime(item.created_at)}}</text>
+        </view>
+        <view class="record-points" :class="item.points > 0 ? 'text-success' : 'text-danger'">
+          {{item.points > 0 ? '+' : ''}}{{item.points}}
+        </view>
+      </view>
+    </view>
+    <view wx:if="{{records.length === 0}}" class="empty-state">
+      <text class="empty-text">暂无积分记录</text>
+    </view>
+  </view>
+
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">操作</text>
+    </view>
+    <view class="action-list">
+      <view class="action-item" wx:if="{{isParent}}" bindtap="showPointsModal">
+        <text class="action-icon">🎯</text>
+        <text class="action-text">调整积分</text>
+        <text class="action-arrow">›</text>
+      </view>
+      <view class="action-item" bindtap="goToRequests">
+        <text class="action-icon">📝</text>
+        <text class="action-text">积分申请记录</text>
+        <text class="action-arrow">›</text>
+      </view>
+      <view class="action-item" bindtap="goToExchange">
+        <text class="action-icon">🎁</text>
+        <text class="action-text">兑换记录</text>
+        <text class="action-arrow">›</text>
+      </view>
+      <view class="action-item delete" wx:if="{{isParent && member?.role === 'child'}}" bindtap="deleteMember">
+        <text class="action-icon">🗑️</text>
+        <text class="action-text">删除成员</text>
+        <text class="action-arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="modal-overlay" wx:if="{{showEditModal}}" bindtap="hideEditModal">
+    <view class="modal-content" catchtap="stopPropagation">
+      <view class="modal-header">
+        <text class="modal-title">编辑成员</text>
+        <text class="modal-close" bindtap="hideEditModal">×</text>
+      </view>
+      <view class="modal-body">
+        <view class="form-item">
+          <text class="form-label">姓名</text>
+          <input 
+            class="form-input" 
+            placeholder="请输入姓名" 
+            value="{{formData.name}}"
+            bindinput="onNameInput"
+          />
+        </view>
+        <view class="form-item">
+          <text class="form-label">角色</text>
+          <view class="role-options">
+            <view 
+              class="role-option" 
+              :class="formData.role === 'parent' ? 'selected' : ''"
+              bindtap="selectRole"
+              data-role="parent"
+            >
+              <text>家长</text>
+            </view>
+            <view 
+              class="role-option" 
+              :class="formData.role === 'child' ? 'selected' : ''"
+              bindtap="selectRole"
+              data-role="child"
+            >
+              <text>孩子</text>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="modal-footer">
+        <button class="btn-secondary" bindtap="hideEditModal">取消</button>
+        <button class="btn-primary" bindtap="saveEdit">保存</button>
+      </view>
+    </view>
+  </view>
+
+  <view class="modal-overlay" wx:if="{{showPointsModal}}" bindtap="hidePointsModal">
+    <view class="modal-content" catchtap="stopPropagation">
+      <view class="modal-header">
+        <text class="modal-title">调整积分</text>
+        <text class="modal-close" bindtap="hidePointsModal">×</text>
+      </view>
+      <view class="modal-body">
+        <view class="form-item">
+          <text class="form-label">积分数量</text>
+          <view class="points-input-group">
+            <view class="points-btn" bindtap="changePoints(-10)">-10</view>
+            <input 
+              class="form-input points-input" 
+              type="number"
+              placeholder="请输入积分" 
+              value="{{pointsChange}}"
+              bindinput="onPointsChangeInput"
+            />
+            <view class="points-btn" bindtap="changePoints(10)">+10</view>
+          </view>
+        </view>
+        <view class="form-item">
+          <text class="form-label">备注</text>
+          <textarea 
+            class="form-textarea" 
+            placeholder="请输入备注信息" 
+            value="{{pointsRemark}}"
+            bindinput="onPointsRemarkInput"
+          />
+        </view>
+      </view>
+      <view class="modal-footer">
+        <button class="btn-secondary" bindtap="hidePointsModal">取消</button>
+        <button class="btn-primary" bindtap="adjustPoints">确认调整</button>
+      </view>
+    </view>
+  </view>
+</view>
