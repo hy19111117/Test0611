@@ -6,7 +6,7 @@
     </view>
     <view class="my-points">
       <text class="points-label">我的积分</text>
-      <text class="points-value">{{currentUser?.points || 0}}</text>
+      <text class="points-value">{{currentUser && currentUser.points || 0}}</text>
     </view>
   </view>
 

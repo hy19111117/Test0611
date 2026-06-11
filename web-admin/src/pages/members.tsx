@@ -31,10 +31,10 @@ const Members: React.FC = () => {
       result = await updateFamilyMember(editingMember.id, formData)
     } else {
       result = await addFamilyMember({
-avatar: "",
-is_active: true,
-...formData
-})
+        avatar: "",
+        is_active: true,
+        ...formData
+      })
     }
 
     if (result) {
@@ -56,9 +56,9 @@ is_active: true,
     setEditingMember(member)
     setFormData({
       name: member.name,
-      // 编辑时强制只允许 child，彻底规避 TS 类型报错
-      role: "child",
-      role: "child",
+      role: member.role as "child",
+      avatar: member.avatar || "",
+      is_active: member.is_active || true,
       points: member.points
     })
     setShowModal(true)
