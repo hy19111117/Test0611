@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import Layout from '../components/Layout'
 import { getExchangeRequests, approveExchangeRequest, rejectExchangeRequest } from '../utils/supabase'
 import { ExchangeRequest } from '../utils/supabase'
+import { Gift, Check, X } from 'lucide-react'
 
 type StatusType = 'all' | 'pending' | 'approved' | 'rejected'
 
@@ -76,7 +77,7 @@ const Exchanges: React.FC = () => {
           <button
             key={status}
             onClick={() => setActiveStatus(status)}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${
               activeStatus === status
                 ? 'bg-primary text-white'
                 : 'bg-white text-text-secondary border border-border hover:bg-bg-hover'
@@ -130,15 +131,17 @@ const Exchanges: React.FC = () => {
                         <div className="flex items-center gap-2">
                           <button 
                             onClick={() => handleApprove(exchange)}
-                            className="btn btn-sm btn-success"
+                            className="btn btn-sm btn-success cursor-pointer"
                           >
-                            通过
+                            <Check className="w-4 h-4" strokeWidth={2} />
+                            <span>通过</span>
                           </button>
                           <button 
                             onClick={() => openRejectModal(exchange)}
-                            className="btn btn-sm btn-danger"
+                            className="btn btn-sm btn-danger cursor-pointer"
                           >
-                            驳回
+                            <X className="w-4 h-4" strokeWidth={2} />
+                            <span>驳回</span>
                           </button>
                         </div>
                       ) : exchange.status === 'rejected' && exchange.reject_reason ? (
@@ -151,7 +154,7 @@ const Exchanges: React.FC = () => {
             </table>
           ) : (
             <div className="empty-state">
-              <span className="empty-icon">🎁</span>
+              <Gift className="w-16 h-16 text-text-muted/40" strokeWidth={2} />
               <p className="empty-title">暂无兑换记录</p>
               <p className="empty-description">家庭成员兑换商品后显示</p>
             </div>
@@ -166,9 +169,9 @@ const Exchanges: React.FC = () => {
               <h2 className="font-semibold text-text-primary">驳回兑换</h2>
               <button 
                 onClick={() => setShowRejectModal(false)}
-                className="text-text-muted hover:text-text-primary transition-colors"
+                className="text-text-muted hover:text-text-primary transition-colors cursor-pointer"
               >
-                ✕
+                <X className="w-5 h-5" strokeWidth={2} />
               </button>
             </div>
             <div className="modal-body">
@@ -184,10 +187,10 @@ const Exchanges: React.FC = () => {
               </div>
             </div>
             <div className="modal-footer">
-              <button onClick={() => setShowRejectModal(false)} className="btn btn-secondary">
+              <button onClick={() => setShowRejectModal(false)} className="btn btn-secondary cursor-pointer">
                 取消
               </button>
-              <button onClick={handleReject} className="btn btn-danger">
+              <button onClick={handleReject} className="btn btn-danger cursor-pointer">
                 确认驳回
               </button>
             </div>

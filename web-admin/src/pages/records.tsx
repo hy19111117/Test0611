@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import Layout from '../components/Layout'
 import { getPointRecords } from '../utils/supabase'
 import { PointRecord } from '../utils/supabase'
+import { FileText, TrendingUp, TrendingDown } from 'lucide-react'
 
 const Records: React.FC = () => {
   const [records, setRecords] = useState<PointRecord[]>([])
@@ -30,22 +31,26 @@ const Records: React.FC = () => {
       </div>
 
       <div className="grid-2 mb-6">
-        <div className="stat-card">
+        <div className="stat-card cursor-pointer">
           <div className="flex items-center justify-between">
             <div>
               <p className="stat-label">累计加分</p>
               <p className="stat-value mt-2 text-success">+{totalEarned}</p>
             </div>
-            <span className="text-3xl">📈</span>
+            <div className="w-10 h-10 rounded-lg bg-success-50 flex items-center justify-center">
+              <TrendingUp className="w-5 h-5 text-success" strokeWidth={2} />
+            </div>
           </div>
         </div>
-        <div className="stat-card">
+        <div className="stat-card cursor-pointer">
           <div className="flex items-center justify-between">
             <div>
               <p className="stat-label">累计扣减</p>
               <p className="stat-value mt-2 text-danger">-{totalSpent}</p>
             </div>
-            <span className="text-3xl">📉</span>
+            <div className="w-10 h-10 rounded-lg bg-danger-50 flex items-center justify-center">
+              <TrendingDown className="w-5 h-5 text-danger" strokeWidth={2} />
+            </div>
           </div>
         </div>
       </div>
@@ -90,7 +95,7 @@ const Records: React.FC = () => {
             </table>
           ) : (
             <div className="empty-state">
-              <span className="empty-icon">📝</span>
+              <FileText className="w-16 h-16 text-text-muted/40" strokeWidth={2} />
               <p className="empty-title">暂无记录</p>
               <p className="empty-description">完成任务或申请积分后显示记录</p>
             </div>

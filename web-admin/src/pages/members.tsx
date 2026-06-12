@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import Layout from '../components/Layout'
 import { getFamilyMembers, addFamilyMember, updateFamilyMember, deleteFamilyMember } from '../utils/supabase'
 import { FamilyMember } from '../utils/supabase'
+import { Users, Plus, Edit2, Trash2, User, X } from 'lucide-react'
 
 const Members: React.FC = () => {
   const [members, setMembers] = useState<FamilyMember[]>([])
@@ -70,9 +71,9 @@ const Members: React.FC = () => {
         </div>
         <button 
           onClick={() => handleOpenModal()}
-          className="btn btn-primary"
+          className="btn btn-primary cursor-pointer"
         >
-          <span>➕</span>
+          <Plus className="w-4 h-4" strokeWidth={2} />
           <span>添加成员</span>
         </button>
       </div>
@@ -109,10 +110,10 @@ const Members: React.FC = () => {
                   <tr key={member.id}>
                     <td>
                       <div 
-                        className="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold"
+                        className="w-10 h-10 rounded-full flex items-center justify-center text-white"
                         style={{ backgroundColor: avatarColors[parseInt(member.id) % 5] }}
                       >
-                        {member.name.charAt(0)}
+                        <User className="w-5 h-5" strokeWidth={2} />
                       </div>
                     </td>
                     <td className="text-text-primary font-medium">{member.name}</td>
@@ -131,15 +132,17 @@ const Members: React.FC = () => {
                       <div className="flex items-center gap-2">
                         <button 
                           onClick={() => handleOpenModal(member)}
-                          className="btn btn-sm btn-text"
+                          className="btn btn-sm btn-text cursor-pointer"
                         >
-                          编辑
+                          <Edit2 className="w-4 h-4" strokeWidth={2} />
+                          <span>编辑</span>
                         </button>
                         <button 
                           onClick={() => handleDelete(member.id)}
-                          className="btn btn-sm btn-danger"
+                          className="btn btn-sm btn-danger cursor-pointer"
                         >
-                          删除
+                          <Trash2 className="w-4 h-4" strokeWidth={2} />
+                          <span>删除</span>
                         </button>
                       </div>
                     </td>
@@ -149,7 +152,7 @@ const Members: React.FC = () => {
             </table>
           ) : (
             <div className="empty-state">
-              <span className="empty-icon">👨‍👩‍👧</span>
+              <Users className="w-16 h-16 text-text-muted/40" strokeWidth={2} />
               <p className="empty-title">暂无成员</p>
               <p className="empty-description">点击上方按钮添加家庭成员</p>
             </div>
@@ -166,9 +169,9 @@ const Members: React.FC = () => {
               </h2>
               <button 
                 onClick={handleCloseModal}
-                className="text-text-muted hover:text-text-primary transition-colors"
+                className="text-text-muted hover:text-text-primary transition-colors cursor-pointer"
               >
-                ✕
+                <X className="w-5 h-5" strokeWidth={2} />
               </button>
             </div>
             <div className="modal-body">
@@ -205,10 +208,10 @@ const Members: React.FC = () => {
               </div>
             </div>
             <div className="modal-footer">
-              <button onClick={handleCloseModal} className="btn btn-secondary">
+              <button onClick={handleCloseModal} className="btn btn-secondary cursor-pointer">
                 取消
               </button>
-              <button onClick={handleSubmit} className="btn btn-primary">
+              <button onClick={handleSubmit} className="btn btn-primary cursor-pointer">
                 {editingMember ? '保存修改' : '添加'}
               </button>
             </div>

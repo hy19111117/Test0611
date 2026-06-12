@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import Layout from '../components/Layout'
 import { getTasks, addTask, updateTask, deleteTask } from '../utils/supabase'
 import { Task } from '../utils/supabase'
+import { CheckSquare, Plus, Edit2, Trash2, X } from 'lucide-react'
 
 const Tasks: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([])
@@ -73,9 +74,9 @@ const Tasks: React.FC = () => {
         </div>
         <button 
           onClick={() => handleOpenModal()}
-          className="btn btn-primary"
+          className="btn btn-primary cursor-pointer"
         >
-          <span>➕</span>
+          <Plus className="w-4 h-4" strokeWidth={2} />
           <span>添加任务</span>
         </button>
       </div>
@@ -124,22 +125,24 @@ const Tasks: React.FC = () => {
                     <td>
                       <button 
                         onClick={() => handleToggleStatus(task)}
-                        className={`switch ${task.is_active ? 'active' : ''}`}
+                        className={`switch ${task.is_active ? 'active' : ''} cursor-pointer`}
                       />
                     </td>
                     <td>
                       <div className="flex items-center gap-2">
                         <button 
                           onClick={() => handleOpenModal(task)}
-                          className="btn btn-sm btn-text"
+                          className="btn btn-sm btn-text cursor-pointer"
                         >
-                          编辑
+                          <Edit2 className="w-4 h-4" strokeWidth={2} />
+                          <span>编辑</span>
                         </button>
                         <button 
                           onClick={() => handleDelete(task.id)}
-                          className="btn btn-sm btn-danger"
+                          className="btn btn-sm btn-danger cursor-pointer"
                         >
-                          删除
+                          <Trash2 className="w-4 h-4" strokeWidth={2} />
+                          <span>删除</span>
                         </button>
                       </div>
                     </td>
@@ -149,7 +152,7 @@ const Tasks: React.FC = () => {
             </table>
           ) : (
             <div className="empty-state">
-              <span className="empty-icon">✅</span>
+              <CheckSquare className="w-16 h-16 text-text-muted/40" strokeWidth={2} />
               <p className="empty-title">暂无任务</p>
               <p className="empty-description">点击上方按钮添加奖惩任务</p>
             </div>
@@ -166,9 +169,9 @@ const Tasks: React.FC = () => {
               </h2>
               <button 
                 onClick={handleCloseModal}
-                className="text-text-muted hover:text-text-primary transition-colors"
+                className="text-text-muted hover:text-text-primary transition-colors cursor-pointer"
               >
-                ✕
+                <X className="w-5 h-5" strokeWidth={2} />
               </button>
             </div>
             <div className="modal-body">
@@ -206,15 +209,15 @@ const Tasks: React.FC = () => {
                 <label className="form-label">启用状态</label>
                 <button 
                   onClick={() => setFormData({ ...formData, is_active: !formData.is_active })}
-                  className={`switch ${formData.is_active ? 'active' : ''}`}
+                  className={`switch ${formData.is_active ? 'active' : ''} cursor-pointer`}
                 />
               </div>
             </div>
             <div className="modal-footer">
-              <button onClick={handleCloseModal} className="btn btn-secondary">
+              <button onClick={handleCloseModal} className="btn btn-secondary cursor-pointer">
                 取消
               </button>
-              <button onClick={handleSubmit} className="btn btn-primary">
+              <button onClick={handleSubmit} className="btn btn-primary cursor-pointer">
                 {editingTask ? '保存修改' : '添加'}
               </button>
             </div>

@@ -2,6 +2,16 @@
 import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { 
+  LayoutDashboard, 
+  Users, 
+  CheckSquare, 
+  FileText, 
+  TrendingUp, 
+  ShoppingCart, 
+  Gift,
+  ChevronLeft
+} from 'lucide-react'
 
 interface SidebarProps {
   isOpen: boolean
@@ -9,13 +19,13 @@ interface SidebarProps {
 }
 
 const navItems = [
-  { label: '仪表盘', href: '/', icon: '📊' },
-  { label: '成员管理', href: '/members', icon: '👨‍👩‍👧' },
-  { label: '任务管理', href: '/tasks', icon: '✅' },
-  { label: '积分记录', href: '/records', icon: '📝' },
-  { label: '积分申请', href: '/requests', icon: '📈' },
-  { label: '积分商城', href: '/products', icon: '🛒' },
-  { label: '兑换记录', href: '/exchanges', icon: '🎁' },
+  { label: '仪表盘', href: '/', Icon: LayoutDashboard },
+  { label: '成员管理', href: '/members', Icon: Users },
+  { label: '任务管理', href: '/tasks', Icon: CheckSquare },
+  { label: '积分记录', href: '/records', Icon: FileText },
+  { label: '积分申请', href: '/requests', Icon: TrendingUp },
+  { label: '积分商城', href: '/products', Icon: ShoppingCart },
+  { label: '兑换记录', href: '/exchanges', Icon: Gift },
 ]
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle }) => {
@@ -37,7 +47,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle }) => {
       >
         <div className="flex items-center px-5 py-5 border-b border-border-light">
           <div className="flex items-center gap-3">
-            <span className="text-2xl">🏠</span>
+            <div className="w-10 h-10 rounded-card bg-gradient-to-br from-primary to-primary-600 flex items-center justify-center">
+              <Users className="w-5 h-5 text-white" strokeWidth={2} />
+            </div>
             <div>
               <h1 className="font-bold text-text-primary text-base">家庭积分管理</h1>
             </div>
@@ -51,10 +63,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle }) => {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`nav-item ${isActive ? 'active' : ''}`}
+                className={`nav-item cursor-pointer ${isActive ? 'active' : ''}`}
                 style={{ animationDelay: `${index * 30}ms` }}
               >
-                <span className="text-lg">{item.icon}</span>
+                <item.Icon className="w-5 h-5" strokeWidth={2} />
                 <span className="text-sm font-medium">{item.label}</span>
               </Link>
             )
@@ -64,9 +76,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle }) => {
         <div className="p-3 border-t border-border-light">
           <button 
             onClick={onToggle}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-bg-hover text-text-secondary transition-colors text-sm"
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-bg-hover text-text-secondary transition-colors text-sm cursor-pointer"
           >
-            <span className="text-sm">◀</span>
+            <ChevronLeft className="w-4 h-4" />
             <span>收起菜单</span>
           </button>
         </div>

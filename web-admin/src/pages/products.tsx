@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import Layout from '../components/Layout'
 import { getProducts, addProduct, updateProduct, deleteProduct } from '../utils/supabase'
 import { Product } from '../utils/supabase'
+import { ShoppingCart, Plus, Edit2, Trash2, X } from 'lucide-react'
 
 const Products: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([])
@@ -73,9 +74,9 @@ const Products: React.FC = () => {
         </div>
         <button 
           onClick={() => handleOpenModal()}
-          className="btn btn-primary"
+          className="btn btn-primary cursor-pointer"
         >
-          <span>➕</span>
+          <Plus className="w-4 h-4" strokeWidth={2} />
           <span>添加商品</span>
         </button>
       </div>
@@ -120,22 +121,24 @@ const Products: React.FC = () => {
                     <td>
                       <button 
                         onClick={() => handleToggleStatus(product)}
-                        className={`switch ${product.is_active ? 'active' : ''}`}
+                        className={`switch ${product.is_active ? 'active' : ''} cursor-pointer`}
                       />
                     </td>
                     <td>
                       <div className="flex items-center gap-2">
                         <button 
                           onClick={() => handleOpenModal(product)}
-                          className="btn btn-sm btn-text"
+                          className="btn btn-sm btn-text cursor-pointer"
                         >
-                          编辑
+                          <Edit2 className="w-4 h-4" strokeWidth={2} />
+                          <span>编辑</span>
                         </button>
                         <button 
                           onClick={() => handleDelete(product.id)}
-                          className="btn btn-sm btn-danger"
+                          className="btn btn-sm btn-danger cursor-pointer"
                         >
-                          删除
+                          <Trash2 className="w-4 h-4" strokeWidth={2} />
+                          <span>删除</span>
                         </button>
                       </div>
                     </td>
@@ -145,7 +148,7 @@ const Products: React.FC = () => {
             </table>
           ) : (
             <div className="empty-state">
-              <span className="empty-icon">🛒</span>
+              <ShoppingCart className="w-16 h-16 text-text-muted/40" strokeWidth={2} />
               <p className="empty-title">暂无商品</p>
               <p className="empty-description">点击上方按钮添加商城商品</p>
             </div>
@@ -162,9 +165,9 @@ const Products: React.FC = () => {
               </h2>
               <button 
                 onClick={handleCloseModal}
-                className="text-text-muted hover:text-text-primary transition-colors"
+                className="text-text-muted hover:text-text-primary transition-colors cursor-pointer"
               >
-                ✕
+                <X className="w-5 h-5" strokeWidth={2} />
               </button>
             </div>
             <div className="modal-body">
@@ -212,15 +215,15 @@ const Products: React.FC = () => {
                 <label className="form-label">上架状态</label>
                 <button 
                   onClick={() => setFormData({ ...formData, is_active: !formData.is_active })}
-                  className={`switch ${formData.is_active ? 'active' : ''}`}
+                  className={`switch ${formData.is_active ? 'active' : ''} cursor-pointer`}
                 />
               </div>
             </div>
             <div className="modal-footer">
-              <button onClick={handleCloseModal} className="btn btn-secondary">
+              <button onClick={handleCloseModal} className="btn btn-secondary cursor-pointer">
                 取消
               </button>
-              <button onClick={handleSubmit} className="btn btn-primary">
+              <button onClick={handleSubmit} className="btn btn-primary cursor-pointer">
                 {editingProduct ? '保存修改' : '添加'}
               </button>
             </div>
