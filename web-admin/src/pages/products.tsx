@@ -6,212 +6,224 @@ import { Product } from '../utils/supabase'
 
 const Products: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([])
+  const [isLoading, setIsLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)
-  const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    points: 0,
-    stock: 0,
-    is_active: true
-  })
+  const [formData, setFormData] = useState({ name: '', description: '', points: 0, stock: 10, is_active: true })
 
   useEffect(() => {
     loadProducts()
   }, [])
 
   const loadProducts = async () => {
+    setIsLoading(true)
     const data = await getProducts()
     setProducts(data)
+    setIsLoading(false)
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!formData.name.trim() || formData.points <= 0) return
-
-    let result
-    if (editingProduct) {
-      result = await updateProduct(editingProduct.id, formData)
+  const handleOpenModal = (product?: Product) => {
+    if (product) {
+      setEditingProduct(product)
+      setFormData({ name: product.name, description: product.description, points: product.points, stock: product.stock, is_active: product.is_active })
     } else {
-      result = await addProduct(formData)
-    }
-
-    if (result) {
-      setShowModal(false)
       setEditingProduct(null)
-      setFormData({ name: '', description: '', points: 0, stock: 0, is_active: true })
-      loadProducts()
+      setFormData({ name: '', description: '', points: 10, stock: 10, is_active: true })
     }
+    setShowModal(true)
+  }
+
+  const handleCloseModal = () => {
+    setShowModal(false)
+    setEditingProduct(null)
+    setFormData({ name: '', description: '', points: 10, stock: 10, is_active: true })
+  }
+
+  const handleSubmit = async () => {
+    if (!formData.name.trim()) return
+    
+    if (editingProduct) {
+      await updateProduct(editingProduct.id, formData)
+    } else {
+      await addProduct(formData)
+    }
+    
+    handleCloseModal()
+    loadProducts()
   }
 
   const handleDelete = async (id: string) => {
     if (confirm('确定要删除该商品吗？')) {
-      const success = await deleteProduct(id)
-      if (success) loadProducts()
+      await deleteProduct(id)
+      loadProducts()
     }
   }
 
-  const handleEdit = (product: Product) => {
-    setEditingProduct(product)
-    setFormData({
-      name: product.name,
-      description: product.description,
-      points: product.points,
-      stock: product.stock,
-      is_active: product.is_active
-    })
-    setShowModal(true)
-  }
-
-  const toggleProductStatus = async (product: Product) => {
-    await updateProduct(product.id, { is_active: !product.is_active })
+  const handleToggleStatus = async (product: Product) => {
+    await updateProduct(product.id, { ...product, is_active: !product.is_active })
     loadProducts()
   }
 
   return (
     <Layout title="积分商城">
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100">
-        <div className="p-6 border-b border-gray-100 flex justify-between items-center">
-          <h2 className="text-lg font-semibold text-gray-800">🛒 商品管理</h2>
-          <button
-            onClick={() => setShowModal(true)}
-            className="px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors"
-          >
-            + 添加商品
-          </button>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-xl font-bold text-text-primary">积分商城</h1>
+          <p className="text-sm text-text-muted mt-1">管理可兑换商品</p>
         </div>
-        <div className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {products.map((product) => (
-              <div
-                key={product.id}
-                className="bg-gray-50 rounded-xl p-4 border border-gray-100 hover:shadow-md transition-shadow"
-              >
-                <div className="w-full h-32 bg-gradient-to-br from-yellow-100 to-orange-100 rounded-lg flex items-center justify-center text-4xl mb-4">
-                  🎁
+        <button 
+          onClick={() => handleOpenModal()}
+          className="btn btn-primary"
+        >
+          <span>➕</span>
+          <span>添加商品</span>
+        </button>
+      </div>
+
+      <div className="card">
+        <div className="card-body overflow-x-auto">
+          {isLoading ? (
+            <div className="py-8">
+              {[1, 2, 3, 4].map(i => (
+                <div key={i} className="flex items-center gap-4 p-4 border-b border-border-light last:border-b-0">
+                  <div className="flex-1 space-y-2">
+                    <div className="skeleton h-5 w-32" />
+                    <div className="skeleton h-4 w-48" />
+                  </div>
+                  <div className="skeleton h-8 w-20 rounded" />
+                  <div className="skeleton h-5 w-16 rounded" />
+                  <div className="skeleton h-8 w-28 rounded" />
                 </div>
-                <h3 className="font-semibold text-gray-800 mb-1">{product.name}</h3>
-                <p className="text-sm text-gray-500 mb-3 line-clamp-2">{product.description}</p>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-xl font-bold text-pink-500">{product.points} <span className="text-sm font-normal text-gray-500">积分</span></span>
-                  <span className={`text-sm px-2 py-1 rounded-full ${
-                    product.stock > 5 ? 'bg-green-100 text-green-600' : 
-                    product.stock > 0 ? 'bg-yellow-100 text-yellow-600' : 
-                    'bg-red-100 text-red-600'
-                  }`}>
-                    库存: {product.stock}
-                  </span>
-                </div>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => handleEdit(product)}
-                    className="flex-1 px-3 py-2 text-sm bg-blue-100 text-blue-600 rounded hover:bg-blue-200 transition-colors"
-                  >
-                    编辑
-                  </button>
-                  <button
-                    onClick={() => toggleProductStatus(product)}
-                    className={`flex-1 px-3 py-2 text-sm rounded transition-colors ${
-                      product.is_active 
-                        ? 'bg-green-100 text-green-600 hover:bg-green-200' 
-                        : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
-                    }`}
-                  >
-                    {product.is_active ? '上架' : '下架'}
-                  </button>
-                  <button
-                    onClick={() => handleDelete(product.id)}
-                    className="flex-1 px-3 py-2 text-sm bg-red-100 text-red-600 rounded hover:bg-red-200 transition-colors"
-                  >
-                    删除
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : products.length > 0 ? (
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>商品名称</th>
+                  <th>描述</th>
+                  <th>所需积分</th>
+                  <th>库存</th>
+                  <th>状态</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                {products.map((product) => (
+                  <tr key={product.id}>
+                    <td className="text-text-primary font-medium">{product.name}</td>
+                    <td className="max-w-xs line-clamp-2">{product.description}</td>
+                    <td className="font-semibold text-primary">{product.points}</td>
+                    <td className={product.stock === 0 ? 'text-danger font-medium' : 'text-text-secondary'}>
+                      {product.stock === 0 ? '已售罄' : `库存: ${product.stock}`}
+                    </td>
+                    <td>
+                      <button 
+                        onClick={() => handleToggleStatus(product)}
+                        className={`switch ${product.is_active ? 'active' : ''}`}
+                      />
+                    </td>
+                    <td>
+                      <div className="flex items-center gap-2">
+                        <button 
+                          onClick={() => handleOpenModal(product)}
+                          className="btn btn-sm btn-text"
+                        >
+                          编辑
+                        </button>
+                        <button 
+                          onClick={() => handleDelete(product.id)}
+                          className="btn btn-sm btn-danger"
+                        >
+                          删除
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <div className="empty-state">
+              <span className="empty-icon">🛒</span>
+              <p className="empty-title">暂无商品</p>
+              <p className="empty-description">点击上方按钮添加商城商品</p>
+            </div>
+          )}
         </div>
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-6 w-full max-w-lg">
-            <h3 className="text-lg font-semibold mb-4">{editingProduct ? '编辑商品' : '添加商品'}</h3>
-            <form onSubmit={handleSubmit}>
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">商品名称</label>
+        <div className="modal-overlay" onClick={handleCloseModal}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="font-semibold text-text-primary">
+                {editingProduct ? '编辑商品' : '添加商品'}
+              </h2>
+              <button 
+                onClick={handleCloseModal}
+                className="text-text-muted hover:text-text-primary transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="modal-body">
+              <div className="form-group">
+                <label className="form-label">商品名称</label>
                 <input
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                  className="input"
                   placeholder="请输入商品名称"
                 />
               </div>
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">商品描述</label>
+              <div className="form-group">
+                <label className="form-label">商品描述</label>
                 <textarea
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                  className="input"
                   placeholder="请输入商品描述"
                   rows={3}
                 />
               </div>
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">积分价格</label>
-                  <input
-                    type="number"
-                    min="1"
-                    value={formData.points}
-                    onChange={(e) => setFormData({ ...formData, points: parseInt(e.target.value) || 0 })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                    placeholder="积分"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">库存数量</label>
-                  <input
-                    type="number"
-                    min="0"
-                    value={formData.stock}
-                    onChange={(e) => setFormData({ ...formData, stock: parseInt(e.target.value) || 0 })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                    placeholder="库存"
-                  />
-                </div>
+              <div className="form-group">
+                <label className="form-label">所需积分</label>
+                <input
+                  type="number"
+                  value={formData.points}
+                  onChange={(e) => setFormData({ ...formData, points: parseInt(e.target.value) || 0 })}
+                  className="input"
+                  placeholder="请输入所需积分"
+                />
               </div>
-              <div className="mb-4">
-                <label className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={formData.is_active}
-                    onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
-                    className="text-pink-500"
-                  />
-                  <span className="text-sm font-medium text-gray-700">上架商品</span>
-                </label>
+              <div className="form-group">
+                <label className="form-label">库存数量</label>
+                <input
+                  type="number"
+                  value={formData.stock}
+                  onChange={(e) => setFormData({ ...formData, stock: parseInt(e.target.value) || 0 })}
+                  className="input"
+                  placeholder="请输入库存数量"
+                />
               </div>
-              <div className="flex gap-3">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowModal(false)
-                    setEditingProduct(null)
-                    setFormData({ name: '', description: '', points: 0, stock: 0, is_active: true })
-                  }}
-                  className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
-                >
-                  取消
-                </button>
-                <button
-                  type="submit"
-                  className="flex-1 px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors"
-                >
-                  {editingProduct ? '保存修改' : '添加'}
-                </button>
+              <div className="form-group flex items-center gap-3">
+                <label className="form-label">上架状态</label>
+                <button 
+                  onClick={() => setFormData({ ...formData, is_active: !formData.is_active })}
+                  className={`switch ${formData.is_active ? 'active' : ''}`}
+                />
               </div>
-            </form>
+            </div>
+            <div className="modal-footer">
+              <button onClick={handleCloseModal} className="btn btn-secondary">
+                取消
+              </button>
+              <button onClick={handleSubmit} className="btn btn-primary">
+                {editingProduct ? '保存修改' : '添加'}
+              </button>
+            </div>
           </div>
         </div>
       )}

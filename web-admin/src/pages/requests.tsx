@@ -4,179 +4,190 @@ import Layout from '../components/Layout'
 import { getPointRequests, approvePointRequest, rejectPointRequest } from '../utils/supabase'
 import { PointRequest } from '../utils/supabase'
 
+type StatusType = 'all' | 'pending' | 'approved' | 'rejected'
+
 const Requests: React.FC = () => {
   const [requests, setRequests] = useState<PointRequest[]>([])
-  const [filterStatus, setFilterStatus] = useState<string | null>(null)
-  const [rejectModal, setRejectModal] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [activeStatus, setActiveStatus] = useState<StatusType>('all')
+  const [showRejectModal, setShowRejectModal] = useState(false)
   const [rejectReason, setRejectReason] = useState('')
+  const [currentRequest, setCurrentRequest] = useState<PointRequest | null>(null)
 
   useEffect(() => {
     loadRequests()
-  }, [filterStatus])
+  }, [])
 
   const loadRequests = async () => {
-    const data = await getPointRequests(filterStatus || undefined)
+    setIsLoading(true)
+    const data = await getPointRequests('all')
     setRequests(data)
+    setIsLoading(false)
   }
 
-  const handleApprove = async (id: string) => {
-    const success = await approvePointRequest(id)
-    if (success) loadRequests()
+  const filteredRequests = activeStatus === 'all' 
+    ? requests 
+    : requests.filter(r => r.status === activeStatus)
+
+  const handleApprove = async (request: PointRequest) => {
+    await approvePointRequest(request.id)
+    loadRequests()
   }
 
   const handleReject = async () => {
-    if (rejectModal && rejectReason.trim()) {
-      const success = await rejectPointRequest(rejectModal, rejectReason)
-      if (success) {
-        setRejectModal(null)
-        setRejectReason('')
-        loadRequests()
-      }
+    if (currentRequest) {
+      await rejectPointRequest(currentRequest.id, rejectReason)
+      loadRequests()
+      setShowRejectModal(false)
+      setRejectReason('')
+      setCurrentRequest(null)
     }
   }
 
-  const avatarColors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7']
-
-  const statusColors: Record<string, string> = {
-    pending: 'bg-yellow-100 text-yellow-600',
-    approved: 'bg-green-100 text-green-600',
-    rejected: 'bg-red-100 text-red-600'
+  const openRejectModal = (request: PointRequest) => {
+    setCurrentRequest(request)
+    setShowRejectModal(true)
   }
 
-  const statusLabels: Record<string, string> = {
+  const statusLabels = {
+    all: '全部',
     pending: '待审核',
     approved: '已通过',
     rejected: '已驳回'
   }
 
+  const statusBadgeClass = {
+    pending: 'badge-warning',
+    approved: 'badge-success',
+    rejected: 'badge-gray'
+  }
+
   return (
-    <Layout title="积分申请审核">
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100">
-        <div className="p-6 border-b border-gray-100">
-          <div className="flex justify-between items-center">
-            <h2 className="text-lg font-semibold text-gray-800">📝 积分申请列表</h2>
-            <div className="flex gap-2">
-              {[null, 'pending', 'approved', 'rejected'].map((status) => (
-                <button
-                  key={status || 'all'}
-                  onClick={() => setFilterStatus(status)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    filterStatus === status
-                      ? 'bg-pink-500 text-white'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                  }`}
-                >
-                  {status ? statusLabels[status] : '全部'}
-                </button>
+    <Layout title="积分申请">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-xl font-bold text-text-primary">积分申请</h1>
+          <p className="text-sm text-text-muted mt-1">审核家庭成员的积分申请</p>
+        </div>
+      </div>
+
+      <div className="flex gap-2 mb-6">
+        {(Object.keys(statusLabels) as StatusType[]).map(status => (
+          <button
+            key={status}
+            onClick={() => setActiveStatus(status)}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+              activeStatus === status
+                ? 'bg-primary text-white'
+                : 'bg-white text-text-secondary border border-border hover:bg-bg-hover'
+            }`}
+          >
+            {statusLabels[status]}
+          </button>
+        ))}
+      </div>
+
+      <div className="card">
+        <div className="card-body overflow-x-auto">
+          {isLoading ? (
+            <div className="py-8">
+              {[1, 2, 3, 4].map(i => (
+                <div key={i} className="flex items-center gap-4 p-4 border-b border-border-light last:border-b-0">
+                  <div className="skeleton w-10 h-10 rounded-full" />
+                  <div className="flex-1 space-y-2">
+                    <div className="skeleton h-5 w-24" />
+                    <div className="skeleton h-4 w-40" />
+                  </div>
+                  <div className="skeleton h-8 w-20 rounded" />
+                  <div className="skeleton h-8 w-32 rounded" />
+                </div>
               ))}
             </div>
-          </div>
-        </div>
-        <div className="p-6">
-          <div className="overflow-x-auto">
-            <table className="w-full">
+          ) : filteredRequests.length > 0 ? (
+            <table className="table">
               <thead>
-                <tr className="border-b border-gray-200">
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600">申请人</th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600">申请任务</th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600">积分变化</th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600">说明</th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600">状态</th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600">申请时间</th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600">操作</th>
+                <tr>
+                  <th>申请人</th>
+                  <th>申请积分</th>
+                  <th>申请理由</th>
+                  <th>状态</th>
+                  <th>操作</th>
                 </tr>
               </thead>
               <tbody>
-                {requests.map((request) => (
-                  <tr key={request.id} className="border-b border-gray-100 hover:bg-gray-50">
-                    <td className="py-4 px-4">
-                      <div className="flex items-center gap-3">
-                        <div
-                          className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold"
-                          style={{ backgroundColor: avatarColors[parseInt(request.member_id) % 5] }}
-                        >
-                          {request.family_members?.name?.charAt(0) || '?'}
-                        </div>
-                        <span className="font-medium text-gray-800">{request.family_members?.name}</span>
-                      </div>
-                    </td>
-                    <td className="py-4 px-4 text-gray-800">{request.tasks?.name || '未知任务'}</td>
-                    <td className="py-4 px-4">
-                      <span className={`text-lg font-bold ${
-                        request.points > 0 ? 'text-green-500' : 'text-red-500'
-                      }`}>
-                        {request.points > 0 ? '+' : ''}{request.points}
+                {filteredRequests.map((request) => (
+                  <tr key={request.id}>
+                    <td className="text-text-primary font-medium">{request.family_members?.name}</td>
+                    <td className="font-semibold text-primary">+{request.points}</td>
+                    <td className="max-w-xs line-clamp-2">{request.description}</td>
+                    <td>
+                      <span className={`badge ${statusBadgeClass[request.status as keyof typeof statusBadgeClass]}`}>
+                        {statusLabels[request.status as StatusType]}
                       </span>
                     </td>
-                    <td className="py-4 px-4 text-gray-600 max-w-xs truncate">
-                      {request.description || '-'}
-                    </td>
-                    <td className="py-4 px-4">
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusColors[request.status]}`}>
-                        {statusLabels[request.status]}
-                      </span>
-                    </td>
-                    <td className="py-4 px-4 text-gray-500 text-sm">
-                      {request.created_at}
-                    </td>
-                    <td className="py-4 px-4">
-                      {request.status === 'pending' && (
-                        <>
-                          <button
-                            onClick={() => handleApprove(request.id)}
-                            className="px-3 py-1 text-sm bg-green-100 text-green-600 rounded hover:bg-green-200 transition-colors mr-2"
+                    <td>
+                      {request.status === 'pending' ? (
+                        <div className="flex items-center gap-2">
+                          <button 
+                            onClick={() => handleApprove(request)}
+                            className="btn btn-sm btn-success"
                           >
                             通过
                           </button>
-                          <button
-                            onClick={() => setRejectModal(request.id)}
-                            className="px-3 py-1 text-sm bg-red-100 text-red-600 rounded hover:bg-red-200 transition-colors"
+                          <button 
+                            onClick={() => openRejectModal(request)}
+                            className="btn btn-sm btn-danger"
                           >
                             驳回
                           </button>
-                        </>
-                      )}
-                      {request.status === 'rejected' && request.reject_reason && (
-                        <span className="text-xs text-gray-500">原因: {request.reject_reason}</span>
-                      )}
+                        </div>
+                      ) : request.status === 'rejected' && request.reject_reason ? (
+                        <span className="text-xs text-text-muted">{request.reject_reason}</span>
+                      ) : null}
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
-          </div>
+          ) : (
+            <div className="empty-state">
+              <span className="empty-icon">📋</span>
+              <p className="empty-title">暂无申请</p>
+              <p className="empty-description">家庭成员申请积分后显示</p>
+            </div>
+          )}
         </div>
       </div>
 
-      {rejectModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-6 w-full max-w-md">
-            <h3 className="text-lg font-semibold mb-4">驳回申请</h3>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">驳回原因</label>
-              <textarea
-                value={rejectReason}
-                onChange={(e) => setRejectReason(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                placeholder="请输入驳回原因"
-                rows={3}
-              />
-            </div>
-            <div className="flex gap-3">
-              <button
-                type="button"
-                onClick={() => {
-                  setRejectModal(null)
-                  setRejectReason('')
-                }}
-                className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+      {showRejectModal && currentRequest && (
+        <div className="modal-overlay" onClick={() => setShowRejectModal(false)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="font-semibold text-text-primary">驳回申请</h2>
+              <button 
+                onClick={() => setShowRejectModal(false)}
+                className="text-text-muted hover:text-text-primary transition-colors"
               >
+                ✕
+              </button>
+            </div>
+            <div className="modal-body">
+              <div className="form-group">
+                <label className="form-label">驳回原因</label>
+                <textarea
+                  value={rejectReason}
+                  onChange={(e) => setRejectReason(e.target.value)}
+                  className="input"
+                  placeholder="请输入驳回原因"
+                  rows={3}
+                />
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button onClick={() => setShowRejectModal(false)} className="btn btn-secondary">
                 取消
               </button>
-              <button
-                onClick={handleReject}
-                className="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
-              >
+              <button onClick={handleReject} className="btn btn-danger">
                 确认驳回
               </button>
             </div>
